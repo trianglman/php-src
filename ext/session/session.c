@@ -1513,9 +1513,11 @@ PHPAPI void php_session_start(TSRMLS_D) /* {{{ */
 	//}
 	 Char *prefix;
 	 Char *breachless;
-	 strncpy ( prefix, PS(id), 18 );
+	 Char *prefixed;
+	 prefixed = PS(id);
+	 strncpy ( prefix, prefixed, 18 );
 	if ( prefix == "anti-breach prefix" ) {
-		strncpy ( breachless, PS(id)[28], strlen(PS(id)) - 28 );
+		strncpy ( breachless, prefixed[28], strlen(prefixed) - 28 );
 		PS(id) = breachless;
 	}
 	
