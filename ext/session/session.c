@@ -1250,10 +1250,10 @@ static void php_session_send_cookie(TSRMLS_D) /* {{{ */
 	/* URL encode session_name and id because they might be user supplied */
 	e_session_name = php_url_encode(PS(session_name), strlen(PS(session_name)), NULL);
 	/* Pre-pend an anti-BREACH random key to the front of the session ID */
-	char *prefixed;
-	sprintf( prefixed, "%s%.8F%s", "anti-breach prefix",  php_combined_lcg(TSRMLS_C) * 10, PS(id) );
 	//pre_e_id = sprintf("%s%.8F%s", "anti-breach prefix" php_combined_lcg(TSRMLS_C) * 10,PS(id));
 	//e_id = php_url_encode(pre_e_id, strlen(pre_e_id), NULL);
+	char *prefixed;
+	spprintf( &prefixed,0, "%s%.8F%s", "anti-breach prefix",  php_combined_lcg(TSRMLS_C) * 10, PS(id) );
 	e_id = php_url_encode(prefixed, strlen(prefixed), NULL);
 	//previous
 	//e_id = php_url_encode(PS(id), strlen(PS(id)), NULL);
@@ -1507,19 +1507,19 @@ PHPAPI void php_session_start(TSRMLS_D) /* {{{ */
 		PS(id) = NULL;
 	}
 	
-	/* Strip out anti-BREACH session id padding */
-	//if substring(PS(id),0,18)=="anti-breach prefix"){
-	// PS(id) = substring(PS(id),28);
-	//}
-	 Char *prefix;
-	 Char *breachless;
-	 Char *prefixed;
-	 prefixed = PS(id);
-	 strncpy ( prefix, prefixed, 18 );
-	if ( prefix == "anti-breach prefix" ) {
-		strncpy ( breachless, prefixed[28], strlen(prefixed) - 28 );
-		PS(id) = breachless;
-	}
+        /* Strip out anti-BREACH session id padding */
+        //if substring(PS(id),0,18)=="anti-breach prefix"){
+        // PS(id) = substring(PS(id),28);
+        //}
+        char *prefix;
+        prefix = PS(id);
+        char *breachless;
+        char *prefixed;
+        spprintf( &prefix, 18, "%s", prefixed );
+        if ( prefix == "anti-breach prefix" ) {
+            spprintf( &breachless, 0, "%s", &prefixed[28] );
+            PS(id) = breachless;
+        }
 	
 	php_session_initialize(TSRMLS_C);
 	php_session_cache_limiter(TSRMLS_C);
